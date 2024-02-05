@@ -44,8 +44,30 @@ namespace Selu383.SP24.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hotel");
-                });
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "3545 Pickle Avenue",
+                            Name = "Marriott"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "8888 Sunny Road",
+                            Name = "Beachside"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "1234 Jerry Lane",
+                            Name = "Hotel Vitality"
+                        });
+
+
 #pragma warning restore 612, 618
+                });
         }
     }
+
 }
