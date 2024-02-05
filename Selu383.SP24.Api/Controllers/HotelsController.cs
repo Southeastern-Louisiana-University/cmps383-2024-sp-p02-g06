@@ -101,6 +101,8 @@ public class HotelsController : ControllerBase
         return Ok();
     }
 
+    // test commit and push
+
     private static bool IsInvalid(HotelDto dto)
     {
         return string.IsNullOrWhiteSpace(dto.Name) ||
