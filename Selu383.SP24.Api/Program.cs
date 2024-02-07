@@ -73,6 +73,23 @@ using (var scope = app.Services.CreateScope())
 
         await db.SaveChangesAsync();
     }
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var users = db.Set<User>();
+    if(!await users.AnyAsync())
+    {
+        await userManager.CreateAsync(new User { UserName = "galkadi" });
+        await userManager.CreateAsync(new User { UserName = "bob" });
+        await userManager.CreateAsync(new User { UserName = "sue" });
+    }
+
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+    var roles = db.Set<Role>();
+    if (!await roles.AnyAsync())
+    {
+        await roleManager.CreateAsync(new Role { Name = "Admin" });
+        await roleManager.CreateAsync(new Role { Name = "User" });
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -97,15 +114,12 @@ app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSpa(x =>
-    {
+    app.UseSpa(x => {
         x.UseProxyToSpaDevelopmentServer("http://localhost:5173");
     });
 }
-else
-{
-    app.MapFallbackToFile("/index.html");
-}
+
+
 
 
 app.Run();
