@@ -22,6 +22,7 @@ namespace Selu383.SP24.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hotel", x => x.Id);
+                
                 });
         }
 
