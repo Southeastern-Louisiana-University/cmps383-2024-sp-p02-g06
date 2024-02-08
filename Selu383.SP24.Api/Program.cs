@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<User,Role>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<DbContext>();
+    .AddEntityFrameworkStores<DataContext>();
 
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -117,6 +117,10 @@ if (app.Environment.IsDevelopment())
     app.UseSpa(x => {
         x.UseProxyToSpaDevelopmentServer("http://localhost:5173");
     });
+}
+else
+{
+    app.MapFallbackToFile("/index.html");
 }
 
 
