@@ -78,9 +78,9 @@ using (var scope = app.Services.CreateScope())
     var users = db.Set<User>();
     if(!await users.AnyAsync())
     {
-        await userManager.CreateAsync(new User { UserName = "galkadi" });
-        await userManager.CreateAsync(new User { UserName = "bob" });
-        await userManager.CreateAsync(new User { UserName = "sue" });
+        await userManager.CreateAsync(new User { UserName = "galkadi" },"Password123!");
+        await userManager.CreateAsync(new User { UserName = "bob" }, "Password123!");
+        await userManager.CreateAsync(new User { UserName = "sue" },"Password123!");
     }
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
@@ -90,6 +90,19 @@ using (var scope = app.Services.CreateScope())
         await roleManager.CreateAsync(new Role { Name = "Admin" });
         await roleManager.CreateAsync(new Role { Name = "User" });
     }
+
+
+    var bob = db.Users.First(x => x.UserName == "bob");
+    var sue = db.Users.First(x => x.UserName == "sue");
+    var galkadi = db.Users.First(x => x.UserName == "galkadi");
+
+    
+
+    await userManager.AddToRoleAsync(bob, "User");
+    await userManager.AddToRoleAsync(sue, "User");
+    await userManager.AddToRoleAsync(galkadi, "Admin");
+
+    var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<User>>();
 }
 
 // Configure the HTTP request pipeline.
