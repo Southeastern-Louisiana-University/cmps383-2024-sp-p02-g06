@@ -15,6 +15,11 @@ public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<
     {
     }
 
+    DbSet<User> Users { get; set; }
+    DbSet<Role> Roles { get; set; }
+    DbSet<UserRole> UserRoles { get; set; }
+    DbSet<Hotel> Hotels { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
