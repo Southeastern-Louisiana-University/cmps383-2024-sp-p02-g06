@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Selu383.SP24.Api.Data;
 using Selu383.SP24.Api.Features.Hotels;
+using Selu383.SP24.Api.Features;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Selu383.SP24.Api.Controllers;
 
@@ -38,6 +42,7 @@ public class HotelsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public ActionResult<HotelDto> CreateHotel(HotelDto dto)
     {
         if (IsInvalid(dto))
@@ -49,18 +54,36 @@ public class HotelsController : ControllerBase
         {
             Name = dto.Name,
             Address = dto.Address,
+            Manager = dataContext.Users.Find(dto.ManagerId)
+
         };
+
         hotels.Add(hotel);
 
         dataContext.SaveChanges();
 
         dto.Id = hotel.Id;
 
+
+
         return CreatedAtAction(nameof(GetHotelById), new { id = dto.Id }, dto);
+    }
+
+    public static string GetUserId(IPrincipal user)
+    {
+        var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.NameIdentifier);
+        return claim == null ? null : claim.Value;
+    }
+
+    public static string GetUserRoles(IPrincipal user)
+    {
+        var claim = ((ClaimsIdentity)user.Identity).FindFirst(ClaimTypes.Role);
+        return claim == null ? null : claim.Value;
     }
 
     [HttpPut]
     [Route("{id}")]
+    [Authorize]
     public ActionResult<HotelDto> UpdateHotel(int id, HotelDto dto)
     {
         if (IsInvalid(dto))
@@ -74,18 +97,29 @@ public class HotelsController : ControllerBase
             return NotFound();
         }
 
+
+        if (!(dto.ManagerId.ToString() == GetUserId(User)) && !(GetUserRoles(User) == "Admin"))
+        {
+            return Forbid();
+        }
+
         hotel.Name = dto.Name;
         hotel.Address = dto.Address;
+        hotel.Manager = dataContext.Users.Find(dto.ManagerId);
 
         dataContext.SaveChanges();
 
         dto.Id = hotel.Id;
+        dto.Name = hotel.Name;
+        dto.Address = hotel.Address;
+        dto.ManagerId = hotel.Manager.Id;
 
         return Ok(dto);
     }
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles = "Admin")]
     public ActionResult DeleteHotel(int id)
     {
         var hotel = hotels.FirstOrDefault(x => x.Id == id);
@@ -101,7 +135,6 @@ public class HotelsController : ControllerBase
         return Ok();
     }
 
-    // test commit and push
 
     private static bool IsInvalid(HotelDto dto)
     {
@@ -118,6 +151,7 @@ public class HotelsController : ControllerBase
                 Id = x.Id,
                 Name = x.Name,
                 Address = x.Address,
+                ManagerId = x.Manager.Id
             });
     }
 }
