@@ -96,11 +96,7 @@ using (var scope = app.Services.CreateScope())
     var sue = db.Users.First(x => x.UserName == "sue");
     var galkadi = db.Users.First(x => x.UserName == "galkadi");
 
-    
 
-    await userManager.AddToRoleAsync(bob, "User");
-    await userManager.AddToRoleAsync(sue, "User");
-    await userManager.AddToRoleAsync(galkadi, "Admin");
 
     var signInManager = scope.ServiceProvider.GetRequiredService<SignInManager<User>>();
 }

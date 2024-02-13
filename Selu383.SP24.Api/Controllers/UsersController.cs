@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Selu383.SP24.Api.Data;
 using Selu383.SP24.Api.Features;
-using Selu383.SP24.Api.Features;
-using SP24.P02.Web.Features.Users;
 using System.Reflection.Metadata;
 using System.Transactions;
 
-namespace Selu383.SP24.P02.Web.Controllers
-{
+namespace Selu383.SP24.Api.Controllers;
+
     [Route("api/users")]
     [ApiController]
     [Authorize]
@@ -129,4 +127,3 @@ namespace Selu383.SP24.P02.Web.Controllers
                 });
         }
     }
-}
